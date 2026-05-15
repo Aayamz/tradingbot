@@ -109,11 +109,13 @@ class NixieGoldBot:
                 
                 if success:
                     print(Fore.GREEN + "✅ Trade successfully placed in MT5!")
-                    self.send_telegram_sync(f"✅ Trade placed! {signal['signal']} at {signal['entry_price']}")
+                    self.telegram.send_trade_notification(signal)
+                    # self.send_telegram_sync(f"✅ Trade placed! {signal['signal']} at {signal['entry_price']}")
                     
                 else:
                     print(Fore.RED + "❌ Trade execution failed")
-                    self.send_telegram_sync(f"❌ Trade failed! {signal['signal']} at {signal['entry_price']}")
+                    self.telegram.send_trade_failure(signal)
+                    # self.send_telegram_sync(f"❌ Trade failed! {signal['signal']} at {signal['entry_price']}")
         
             else:
                 print(Fore.YELLOW + "⚠️ AUTO_TRADE or DRY_RUN is blocking execution")
