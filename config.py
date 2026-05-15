@@ -15,6 +15,27 @@ MT5_SERVER = os.getenv('MT5_SERVER')
 SYMBOL = os.getenv('SYMBOL', 'XAUUSDm')
 ACCOUNT_BALANCE = float(os.getenv('ACCOUNT_BALANCE', 100))
 
+# ==================== TRADING CONFIG ====================
+
+SYMBOL = "XAUUSD"          # or XAUUSDm depending on your broker
+
+# Risk Management
+RISK_PERCENT = 1.0         # % of account balance to risk per trade (recommended: 0.5 - 2.0)
+BASE_LOT_SIZE = 0.01       # Fallback lot size
+MAX_LOT_SIZE = 2.0         # Safety cap
+
+# Fixed SL/TP in dollars (for Gold)
+DEFAULT_SL_DISTANCE = 2.0   # USD (e.g. $2 away from entry)
+DEFAULT_TP_DISTANCE = 5.0   # USD (TP = 2.5x SL)
+
+# Signal Settings
+MIN_CONFIDENCE = 60        # Minimum confidence % to take trade
+MAX_SPREAD = 30            # Max allowed spread in points
+
+# Other
+MAGIC_NUMBER = 234000
+DEVIATION = 50
+
 
 # ================== TIMEFRAME SETTINGS FOR TESTING ==================
 TIMEFRAME_H4 = 'H4'          # Keep H4 for higher timeframe bias

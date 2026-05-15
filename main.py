@@ -141,12 +141,6 @@ class NixieGoldBot:
             else:
                 print(Fore.YELLOW + "⚠️ AUTO_TRADE or DRY_RUN is blocking execution")
 
-            # Send to Telegram
-            try:
-                send_trade_failure_sync(signal, error="Auto-trade disabled for testing")  # For testing failure message
-            except:
-                print(Fore.RED + "Failed to send to Telegram")
-
         except Exception as e:
             print(Fore.RED + f"Error processing signal: {e}")
 
