@@ -106,6 +106,8 @@ class NixieGoldBot:
             if self.auto_trade_enabled and not config.DRY_RUN:
                 print(Fore.YELLOW + "\n📤 Sending trade to MT5...")
                 success = self.live_trader.execute_trade(signal)
+
+                import asyncio
                 
                 if success:
                     print(Fore.GREEN + "✅ Trade successfully placed in MT5!")
@@ -113,6 +115,8 @@ class NixieGoldBot:
                     self.trade_logger.log_trade(signal, "EXECUTED")
                 else:
                     print(Fore.RED + "❌ Trade execution failed")
+                    asyncio.run(self.telegram.send_signal(signal))
+                    self.trade_logger.log_trade(signal, "EXECUTED")
             else:
                 print(Fore.YELLOW + "⚠️ AUTO_TRADE or DRY_RUN is blocking execution")
 
