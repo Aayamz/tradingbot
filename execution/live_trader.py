@@ -2,7 +2,8 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
-import MetaTrader5 as mt5
+from siliconmetatrader5 import MetaTrader5
+mt5 = MetaTrader5(host="localhost", port=8001)
 from datetime import datetime
 import config
 
@@ -12,70 +13,82 @@ class LiveTrader:
         self.magic_number = 123456  
     
     def execute_trade(self, signal):
-        """
-        Execute a trade based on signal
-        
-        WARNING: This places REAL trades!
-        Only use when you're confident in the bot.
-        """
+    
         try:
+            print("\n" + "="*70)
+            print("🚀 EXECUTION ATTEMPT STARTED")
+            print(f"Signal Type : {signal.get('signal')}")
+            print(f"Entry Price : {signal.get('entry_price')}")
+            print(f"Stop Loss   : {signal.get('stop_loss')}")
+            print(f"TP1         : {signal.get('take_profit_1')}")
+            print(f"Lot Size    : {signal.get('lot_size', 0.01)}")
+            print("="*70)
+
+            # Check MT5 connection
+            if not mt5.terminal_info():
+                print("❌ MT5 Terminal Not Connected!")
+                return False
+
             symbol_info = mt5.symbol_info(self.symbol)
             if symbol_info is None:
-                print(f" Symbol {self.symbol} not found")
+                print(f"❌ Symbol {self.symbol} not found in Market Watch")
                 return False
-            
-            if not symbol_info.trade_mode == mt5.SYMBOL_TRADE_MODE_FULL:
-                print(f" Trading not allowed for {self.symbol}")
+
+            print(f"✅ Symbol found | Trade Mode: {symbol_info.trade_mode}")
+
+            tick = mt5.symbol_info_tick(self.symbol)
+            if tick is None:
+                print("❌ Cannot get current tick prices")
                 return False
-            
-            lot_size = signal['lot_size']
-            entry_price = signal['entry_price']
-            stop_loss = signal['stop_loss']
-            take_profit = signal['take_profit_1']  
-            
+
+            # Prepare Order
             if signal['signal'] == 'LONG':
                 order_type = mt5.ORDER_TYPE_BUY
-                price = mt5.symbol_info_tick(self.symbol).ask
+                price = tick.ask
             else:
                 order_type = mt5.ORDER_TYPE_SELL
-                price = mt5.symbol_info_tick(self.symbol).bid
-            
+                price = tick.bid
+
+            lot_size = float(signal.get('lot_size', 0.01))
+
             request = {
                 "action": mt5.TRADE_ACTION_DEAL,
                 "symbol": self.symbol,
                 "volume": lot_size,
                 "type": order_type,
                 "price": price,
-                "sl": stop_loss,
-                "tp": take_profit,
-                "deviation": 20,
-                "magic": self.magic_number,
-                "comment": f"Nixie Bot {signal['signal']}",
+                "sl": signal['stop_loss'],
+                "tp": signal.get('take_profit_1'),
+                "deviation": 50,
+                "magic": getattr(self, 'magic_number', 123456),
+                "comment": f"NixieBot_{signal['signal']}",
                 "type_time": mt5.ORDER_TIME_GTC,
                 "type_filling": mt5.ORDER_FILLING_IOC,
             }
+
+            print(f"📤 Sending Order to MT5 | Price: {price:.2f} | Lot: {lot_size}")
             
-            print(f" Sending {signal['signal']} order...")
             result = mt5.order_send(request)
-            
+
             if result is None:
-                print(f" Order send failed: {mt5.last_error()}")
+                print("❌ order_send() returned None")
+                print(f"Last Error: {mt5.last_error()}")
                 return False
-            
-            if result.retcode != mt5.TRADE_RETCODE_DONE:
-                print(f"   Order failed: {result.retcode}")
-                print(f"   Comment: {result.comment}")
+
+            print(f"MT5 Retcode: {result.retcode} | Comment: {result.comment}")
+
+            if result.retcode == mt5.TRADE_RETCODE_DONE:
+                print("✅ TRADE SUCCESSFULLY PLACED IN MT5!")
+                print(f"Ticket: {result.order}")
+                return True
+            else:
+                print("❌ TRADE REJECTED by Broker")
                 return False
-            
-            print(f"   Order executed successfully!")
-            print(f"   Ticket: {result.order}")
-            print(f"   Volume: {result.volume}")
-            print(f"   Price: {result.price}")
-            
-            return True
-            
+
         except Exception as e:
-            print(f" Error executing trade: {e}")
+            print(f"❌ Exception in execute_trade: {e}")
+            import traceback
+            traceback.print_exc()
             return False
     
     def close_position(self, position_id):

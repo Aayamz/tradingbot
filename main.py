@@ -118,7 +118,7 @@ class NixieGoldBot:
             # Fetch market data
             print(Fore.YELLOW + " Fetching market data...")
             df_h4 = self.handler.get_gold_data('H4', 200)
-            df_m15 = self.handler.get_gold_data('M15', 500)
+            df_m15 = self.handler.get_gold_data('M1', 800)
             
             if df_h4 is None or df_m15 is None:
                 print(Fore.RED + " Failed to fetch market data")

@@ -272,7 +272,7 @@ SCAN_INTERVAL_MINUTES = 15   # How often to check for signals
 
 # Machine Learning
 USE_ML_FILTER = True         # Enable ML filtering
-ML_CONFIDENCE_THRESHOLD = 0.65
+ML_CONFIDENCE_THRESHOLD = 0.01
 ```
 
 ### Trading Sessions

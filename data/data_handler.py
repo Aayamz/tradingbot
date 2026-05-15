@@ -2,7 +2,8 @@ import sys
 from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 
-import MetaTrader5 as mt5
+from siliconmetatrader5 import MetaTrader5
+mt5 = MetaTrader5(host="localhost", port=8001)
 import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
@@ -166,8 +167,8 @@ if __name__ == "__main__":
     handler = DataHandler()
     
     if handler.connect_mt5():
-        df_h4 = handler.get_gold_data('H4', 100)
-        df_m15 = handler.get_gold_data('M15', 200)
+        df_h4 = handler.get_gold_data(config.TIMEFRAME_H4, 200)
+        df_entry = handler.get_gold_data(config.TIMEFRAME_ENTRY, 800)   # More bars for lower TF
         
         if df_h4 is not None:
             print("\nH4 Data Sample:")

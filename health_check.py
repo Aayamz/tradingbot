@@ -18,7 +18,8 @@ print(f".env file: {'Found' if env_exists else 'Missing'}")
 
 # Check if MT5 can import
 try:
-    import MetaTrader5 as mt5
+    from siliconmetatrader5 import MetaTrader5
+mt5 = MetaTrader5(host="localhost", port=8001)
     print("MT5 Import: Success")
 except:
     print("MT5 Import: Failed")

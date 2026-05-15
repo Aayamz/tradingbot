@@ -15,7 +15,6 @@ MT5_SERVER = os.getenv('MT5_SERVER')
 SYMBOL = os.getenv('SYMBOL', 'XAUUSDm')
 ACCOUNT_BALANCE = float(os.getenv('ACCOUNT_BALANCE', 100))
 
-
 # ================== TIMEFRAME SETTINGS FOR TESTING ==================
 TIMEFRAME_H4 = 'H4'          # Keep H4 for higher timeframe bias
 TIMEFRAME_ENTRY = 'M1'       # Change this → 'M5' or 'M1'
@@ -25,10 +24,10 @@ TIMEFRAME_ENTRY = 'M1'       # Change this → 'M5' or 'M1'
 
 # ================== AGGRESSIVE SETTINGS ==================
 
-RISK_PERCENT = 2.0
-MAX_RISK_PERCENT = 2.0
+RISK_PERCENT = 1.0
+MAX_RISK_PERCENT = 1.5
 
-SCAN_INTERVAL_MINUTES = 0.5                    # Fast for debugging
+SCAN_INTERVAL_MINUTES = 0.5                  # Fast for debugging
 
 # Technical Indicators
 EMA_FAST = 20
