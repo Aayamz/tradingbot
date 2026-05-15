@@ -109,6 +109,8 @@ class NixieGoldBot:
                 
                 if success:
                     print(Fore.GREEN + "✅ Trade successfully placed in MT5!")
+                    asyncio.run(self.telegram.send_signal(signal))
+                    self.trade_logger.log_trade(signal, "EXECUTED")
                 else:
                     print(Fore.RED + "❌ Trade execution failed")
             else:

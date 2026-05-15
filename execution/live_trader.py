@@ -191,8 +191,8 @@ class LiveTrader:
                 "action": mt5.TRADE_ACTION_SLTP,
                 "symbol": self.symbol,
                 "position": position_id,
-                "sl": new_sl,
-                "tp": position.tp
+                "sl": round(new_sl,2),
+                "tp": round(position.tp,2)
             }
             
             result = mt5.order_send(request)
