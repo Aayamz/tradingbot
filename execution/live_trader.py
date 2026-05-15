@@ -4,6 +4,8 @@ sys.path.append(str(Path(__file__).parent.parent))
 
 from siliconmetatrader5 import MetaTrader5
 mt5 = MetaTrader5(host="localhost", port=8001)
+mt5._MetaTrader5__conn.execute("import numpy as np") 
+print("Bridge patched! Trading should work now.")
 from datetime import datetime
 import config
 

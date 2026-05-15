@@ -20,6 +20,8 @@ print(f".env file: {'Found' if env_exists else 'Missing'}")
 try:
     from siliconmetatrader5 import MetaTrader5
 mt5 = MetaTrader5(host="localhost", port=8001)
+mt5._MetaTrader5__conn.execute("import numpy as np") 
+    print("Bridge patched! Trading should work now.")
     print("MT5 Import: Success")
 except:
     print("MT5 Import: Failed")

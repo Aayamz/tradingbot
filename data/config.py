@@ -24,8 +24,8 @@ TIMEFRAME_ENTRY = 'M1'       # Change this → 'M5' or 'M1'
 
 # ================== AGGRESSIVE SETTINGS ==================
 
-RISK_PERCENT = 1.0
-MAX_RISK_PERCENT = 1.5
+RISK_PERCENT = 2.0
+MAX_RISK_PERCENT = 2.0
 
 SCAN_INTERVAL_MINUTES = 0.5                  # Fast for debugging
 
