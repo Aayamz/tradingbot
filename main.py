@@ -16,6 +16,11 @@ from execution.telegram_multi_user import MultiUserTelegramBot
 from models.ml_model import MLSignalFilter
 from models.trade_logger import TradeLogger
 from execution.live_trader import LiveTrader
+from execution.telegram_bot import (
+    send_trade_success_sync, 
+    send_trade_failure_sync,
+    send_text_sync
+)
 
 # Initialize colorama
 init(autoreset=True)
@@ -109,22 +114,36 @@ class NixieGoldBot:
                 
                 if success:
                     print(Fore.GREEN + "✅ Trade successfully placed in MT5!")
-                    self.telegram.send_trade_notification(signal)
-                    # self.send_telegram_sync(f"✅ Trade placed! {signal['signal']} at {signal['entry_price']}")
+                    trade_info = {
+                    'signal': signal.get('signal'),
+                    'symbol': signal.get('symbol', config.SYMBOL),
+                    'entry_price': signal.get('entry_price'),
+                    'stop_loss': signal.get('stop_loss'),
+                    'take_profit_1': signal.get('take_profit_1'),
+                    'lot_size': signal.get('lot_size', 0.01),
+                    'ticket': 'MT5 Order Placed'   # You can improve this later
+                }
+                    send_trade_success_sync(trade_info)
                     
                 else:
                     print(Fore.RED + "❌ Trade execution failed")
-                    self.telegram.send_trade_failure(signal)
-                    # self.send_telegram_sync(f"❌ Trade failed! {signal['signal']} at {signal['entry_price']}")
+                    trade_info = {
+                    'signal': signal.get('signal'),
+                    'symbol': signal.get('symbol', config.SYMBOL),
+                    'entry_price': signal.get('entry_price'),
+                    'stop_loss': signal.get('stop_loss'),
+                    'take_profit_1': signal.get('take_profit_1'),
+                    'lot_size': signal.get('lot_size', 0.01),
+                    'ticket': 'MT5 Order Placed'   # You can improve this later
+                }
+                    send_trade_failure_sync(trade_info, error="Execution failed in MT5")
         
             else:
                 print(Fore.YELLOW + "⚠️ AUTO_TRADE or DRY_RUN is blocking execution")
 
             # Send to Telegram
             try:
-                import asyncio
-                asyncio.run(self.multi_user_telegram.send_signal(signal))
-                self.send_telegram_sync(f"🚀 New Signal: {signal['signal']} at {signal['entry_price']}")
+                send_trade_failure_sync(signal, error="Auto-trade disabled for testing")  # For testing failure message
             except:
                 print(Fore.RED + "Failed to send to Telegram")
 

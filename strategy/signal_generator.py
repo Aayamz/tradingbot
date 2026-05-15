@@ -77,16 +77,19 @@ class SignalGenerator:
             return None
 
     def _build_signal(self, direction, entry_price, level, df, regime):
-       
+        """Build signal with safe stop levels"""
         try:
+            # Increased SL distance to avoid "Invalid stops"
+            sl_pips = 25   # Minimum 25 pips SL
+
             if direction == 'LONG':
-                stop_loss = level - (15 * 0.01)   # 15 pips SL
+                stop_loss = entry_price - (sl_pips * 0.01)
                 multiplier = 1
             else:
-                stop_loss = level + (15 * 0.01)
+                stop_loss = entry_price + (sl_pips * 0.01)
                 multiplier = -1
 
-            pip_risk = abs(entry_price - stop_loss) / 0.01
+            pip_risk = sl_pips
 
             # Calculate TPs
             tp1 = entry_price + (multiplier * config.TP1_RATIO * pip_risk * 0.01)
@@ -100,7 +103,7 @@ class SignalGenerator:
                 'take_profit_1': round(tp1, 2),
                 'take_profit_2': round(tp2, 2),
                 'take_profit_3': round(tp3, 2),
-                'lot_size': 0.01,                       # RiskManager will override if needed
+                'lot_size': 0.01,
                 'confidence': self._calculate_confidence(df, regime, pip_risk),
                 'pips_risk': round(pip_risk, 1),
                 'pips_tp1': round(config.TP1_RATIO * pip_risk, 1),
@@ -109,10 +112,7 @@ class SignalGenerator:
                 'risk_dollars': 0.0,
                 'expected_reward': 0.0,
                 'rr_ratio': round(config.TP1_RATIO, 2),
-                'regime': regime,
-                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                'level_name': 'Manual Level',
-                'session': 'Testing'
+                'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
             }
             return signal
 
