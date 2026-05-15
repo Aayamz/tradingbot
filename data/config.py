@@ -36,6 +36,7 @@ MAX_SPREAD = 30            # Max allowed spread in points
 MAGIC_NUMBER = 234000
 DEVIATION = 50
 
+
 # ================== TIMEFRAME SETTINGS FOR TESTING ==================
 TIMEFRAME_H4 = 'H4'          # Keep H4 for higher timeframe bias
 TIMEFRAME_ENTRY = 'M1'       # Change this → 'M5' or 'M1'
@@ -48,7 +49,7 @@ TIMEFRAME_ENTRY = 'M1'       # Change this → 'M5' or 'M1'
 RISK_PERCENT = 2.0
 MAX_RISK_PERCENT = 2.0
 
-SCAN_INTERVAL_MINUTES = 0.5                  # Fast for debugging
+SCAN_INTERVAL_MINUTES = 0.5                    # Fast for debugging
 
 # Technical Indicators
 EMA_FAST = 20

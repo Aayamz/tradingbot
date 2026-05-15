@@ -110,32 +110,16 @@ class NixieGoldBot:
             # FORCE EXECUTION
             if self.auto_trade_enabled and not config.DRY_RUN:
                 print(Fore.YELLOW + "\n📤 Sending trade to MT5...")
-                success = self.live_trader.execute_trade(signal)
+                success, trade_info = self.live_trader.execute_trade(signal)
                 
-                if success:
+                if success and trade_info:
                     print(Fore.GREEN + "✅ Trade successfully placed in MT5!")
-                    trade_info = {
-                    'signal': signal.get('signal'),
-                    'symbol': signal.get('symbol', config.SYMBOL),
-                    'entry_price': signal.get('entry_price'),
-                    'stop_loss': signal.get('stop_loss'),
-                    'take_profit_1': signal.get('take_profit_1'),
-                    'lot_size': signal.get('lot_size', 0.01),
-                    'ticket': 'MT5 Order Placed'   # You can improve this later
-                }
+                    from execution.telegram_bot import send_trade_success_sync
                     send_trade_success_sync(trade_info)
                     
                 else:
                     print(Fore.RED + "❌ Trade execution failed")
-                    trade_info = {
-                    'signal': signal.get('signal'),
-                    'symbol': signal.get('symbol', config.SYMBOL),
-                    'entry_price': signal.get('entry_price'),
-                    'stop_loss': signal.get('stop_loss'),
-                    'take_profit_1': signal.get('take_profit_1'),
-                    'lot_size': signal.get('lot_size', 0.01),
-                    'ticket': 'MT5 Order Placed'   # You can improve this later
-                }
+                    from execution.telegram_bot import send_trade_failure_sync
                     send_trade_failure_sync(trade_info, error="Execution failed in MT5")
         
             else:

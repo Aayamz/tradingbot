@@ -17,7 +17,7 @@ ACCOUNT_BALANCE = float(os.getenv('ACCOUNT_BALANCE', 100))
 
 # ==================== TRADING CONFIG ====================
 
-SYMBOL = "XAUUSD"          # or XAUUSDm depending on your broker
+SYMBOL = "XAUUSD-VIP"          # or XAUUSDm depending on your broker
 
 # Risk Management
 RISK_PERCENT = 1.0         # % of account balance to risk per trade (recommended: 0.5 - 2.0)
