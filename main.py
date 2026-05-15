@@ -106,17 +106,15 @@ class NixieGoldBot:
             if self.auto_trade_enabled and not config.DRY_RUN:
                 print(Fore.YELLOW + "\n📤 Sending trade to MT5...")
                 success = self.live_trader.execute_trade(signal)
-
-                import asyncio
                 
                 if success:
                     print(Fore.GREEN + "✅ Trade successfully placed in MT5!")
-                    asyncio.run(self.telegram.send_signal(signal))
-                    self.trade_logger.log_trade(signal, "EXECUTED")
+                    self.send_telegram_sync(f"✅ Trade placed! {signal['signal']} at {signal['entry_price']}")
+                    
                 else:
                     print(Fore.RED + "❌ Trade execution failed")
-                    asyncio.run(self.telegram.send_signal(signal))
-                    self.trade_logger.log_trade(signal, "EXECUTED")
+                    self.send_telegram_sync(f"❌ Trade failed! {signal['signal']} at {signal['entry_price']}")
+        
             else:
                 print(Fore.YELLOW + "⚠️ AUTO_TRADE or DRY_RUN is blocking execution")
 
@@ -124,6 +122,7 @@ class NixieGoldBot:
             try:
                 import asyncio
                 asyncio.run(self.multi_user_telegram.send_signal(signal))
+                self.send_telegram_sync(f"🚀 New Signal: {signal['signal']} at {signal['entry_price']}")
             except:
                 print(Fore.RED + "Failed to send to Telegram")
 
